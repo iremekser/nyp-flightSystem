@@ -12,6 +12,10 @@ public class Capital {
 		this.lng = lng;
 	}
 
+	public Capital() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public int getId() {
 		return id;
 	}

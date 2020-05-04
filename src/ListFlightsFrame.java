@@ -12,6 +12,10 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class ListFlightsFrame extends JFrame {
 
@@ -70,10 +74,12 @@ public class ListFlightsFrame extends JFrame {
 		contentPane.setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
+		
 		scrollPane.setBounds(12, 13, 866, 378);
 		contentPane.add(scrollPane);
 
 		table = new JTable();
+		
 		scrollPane.setViewportView(table);
 
 		JButton btnNewButton = new JButton("Delete");
@@ -109,6 +115,17 @@ public class ListFlightsFrame extends JFrame {
 		contentPane.add(btnNewButton_1);
 
 		JButton btnNewButton_2 = new JButton("Edit");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				AddFlightDialog addFlight = new AddFlightDialog();
+				addFlight.setComboBoxData(capitals);
+				addFlight.setFlight((Flight) flights.get(table.getSelectedRow()));
+				
+				addFlight.setVisible(true);
+				flights.set(table.getSelectedRow(), addFlight.flight);
+				setTableData(flights);
+			}
+		});
 		btnNewButton_2.setBounds(890, 89, 97, 25);
 		contentPane.add(btnNewButton_2);
 	}

@@ -17,15 +17,28 @@ public class AddCapitalDialog extends JDialog {
 	private JTextField txtName;
 	private JTextField txtLat;
 	private JTextField txtLng;
-
+	
+	public boolean editMode = false;
+	public Capital capital = new Capital();
+	JButton okButton = new JButton("Add");
 	/**
 	 * Launch the application.
 	 */
+	public void setCapital(Capital c) {
+		this.capital = c;
+		txtName.setText(capital.getName());
+		txtLat.setText(capital.getLat()+"");
+		txtLng.setText(capital.getLng()+"");
+		okButton.setText(editMode ? "Update" : "Add");
+		
+	}
 	public static void main(String[] args) {
 		try {
 			AddCapitalDialog dialog = new AddCapitalDialog();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -86,13 +99,23 @@ public class AddCapitalDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("Add");
+			
+				
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						name = txtName.getText();
-						lat = Float.parseFloat(txtLat.getText());
-						lng = Float.parseFloat(txtLng.getText());
+						if(!editMode) {
+							name = txtName.getText();
+							lat = Float.parseFloat(txtLat.getText());
+							lng = Float.parseFloat(txtLng.getText());
+						
+						}else {
+							capital.setName(txtName.getText());
+							capital.setLat(Float.parseFloat(txtLat.getText()));
+							capital.setLng(Float.parseFloat(txtLng.getText()));
+						}
+						
 						dispose();
+						
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -109,6 +132,7 @@ public class AddCapitalDialog extends JDialog {
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
+			
 		}
 	}
 
