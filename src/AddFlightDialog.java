@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class AddFlightDialog extends JDialog {
 
 	public void setFlight(Flight f) {
 		this.flight = f;
-		
+
 		comboBox.getModel().setSelectedItem(new ComboItem(flight.getFrom().getName(), flight.getFrom().getId()));
 		comboBox_1.getModel().setSelectedItem(new ComboItem(flight.getTo().getName(), flight.getTo().getId()));
 		txtFlightNumber.setText(flight.getFlightNumber());
@@ -182,7 +183,12 @@ public class AddFlightDialog extends JDialog {
 						flight.setScheduledArrival(arrival);
 						flight.setDeparture(departure);
 						flight.setArrival(arrival);
-
+						
+						if (!editMode)
+							{
+							
+								flight.startThread();
+							}
 						dispose();
 					}
 				});

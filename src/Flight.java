@@ -1,5 +1,10 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Random;
 
 public class Flight {
 	private int id;
@@ -12,6 +17,8 @@ public class Flight {
 	private Calendar scheduledArrival;
 	private Calendar departure;
 	private Calendar arrival;
+	private boolean accepted;
+	private boolean delayed;
 	public SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 	public Flight(int id, Capital from, Capital to, String flightNumber, String airline, String aircraftModel,
@@ -26,10 +33,77 @@ public class Flight {
 		this.scheduledArrival = scheduledArrival;
 		this.departure = scheduledDeparture;
 		this.arrival = scheduledArrival;
+
+		startThread();
+	}
+
+	public String getInfo() {
+		return "#" + this.getId() + "  " + this.getAirline() + "  " + this.getFrom().getName() + "->"
+				+ this.getTo().getName() + "   " + this.getFlightNumber() + "  "
+				+ (isLanded() ? "iniþ yapýldý"
+						: ((isTakeOff() ? "     iniþe " : "    kalkýþa ") + minuteLeft() + " dakika kaldý "
+								+ (accepted ? " -- iniþ izni verildi" : (delayed ? " -- uçuþ geciktirildi" : ""))));
+	}
+
+	public void appendText() throws IOException {
+		Files.write(Paths.get("src/flights.txt"),
+				(this.getId() + "," + this.getFrom().getId() + "," + this.getTo().getId() + "," + this.getFlightNumber()
+						+ "," + this.getAirline() + "," + this.getAircraftModel() + "," + this.getDepartureFormatted()
+						+ "," + this.getArrivalFormatted()+"\n").getBytes(),
+				StandardOpenOption.APPEND);
+
+	}
+
+	public float minuteLeft() {
+		if (isTakeOff())
+			return (this.getArrival().getTimeInMillis() - MainScreen.systemTime.getTimeInMillis()) / 1000 / 60;
+		else
+			return (this.departure.getTimeInMillis() - MainScreen.systemTime.getTimeInMillis()) / 1000 / 60;
+	}
+
+	public boolean isTakeOff() {
+		return this.departure.getTimeInMillis() < MainScreen.systemTime.getTimeInMillis();
+	}
+
+	public boolean isLanded() {
+		return minuteLeft() <= 0;
+	}
+
+	public void addMinuteToArrival(int minute) {
+		this.arrival.add(Calendar.MINUTE, minute);
 	}
 
 	public Flight() {
-		// TODO Auto-generated constructor stub
+		// startThread();
+	}
+
+	public void startThread() {
+		Random r = new Random();
+		Thread flightThread = new Thread() {
+			public void run() {
+				while (true) {
+					try {
+						sleep(1000);
+						if (minuteLeft() < 15 && accepted == false) {
+							int random = r.nextInt(100);
+							if (random < 50) {
+								accepted = true;
+							} else {
+								addMinuteToArrival(10);
+								delayed = true;
+							}
+						}
+
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+				}
+			}
+		};
+		if (!isLanded())
+			flightThread.start();
+
 	}
 
 	public int getId() {

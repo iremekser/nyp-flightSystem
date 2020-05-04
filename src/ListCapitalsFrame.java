@@ -11,6 +11,7 @@ import javax.swing.JList;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 
 public class ListCapitalsFrame extends JFrame {
@@ -84,9 +85,15 @@ public class ListCapitalsFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				AddCapitalDialog addC = new AddCapitalDialog();
 				addC.setVisible(true);
-				if(addC.name == "" || addC.name==null)
+				if (addC.name == "" || addC.name == null)
 					return;
 				Capital newCapital = new Capital(capitals.size() + 1, addC.name, addC.lat, addC.lng);
+				try {
+					newCapital.appendText();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				capitals.add(newCapital);
 				tableModel.addRow(new Object[] { newCapital.getId(), newCapital.getName(), newCapital.getLat(),
 						newCapital.getLng() });

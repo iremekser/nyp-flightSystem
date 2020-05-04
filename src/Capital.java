@@ -1,3 +1,7 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 public class Capital {
 	private int id;
@@ -14,6 +18,13 @@ public class Capital {
 
 	public Capital() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public void appendText() throws IOException {
+		Files.write(Paths.get("src/capitals.txt"),
+				(this.getId() + "," + this.getName() + "," + this.getLat() + "," + this.getLng() + "\n").getBytes(),
+				StandardOpenOption.APPEND);
+
 	}
 
 	public int getId() {

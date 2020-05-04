@@ -8,16 +8,19 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.beans.PropertyChangeEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class ListFlightsFrame extends JFrame {
+public class ListFlightsFrame extends JDialog {
 
 	private JPanel contentPane;
 	private JTable table;
@@ -66,7 +69,8 @@ public class ListFlightsFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public ListFlightsFrame() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setModal(true);
+
 		setBounds(100, 100, 1017, 451);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -101,6 +105,12 @@ public class ListFlightsFrame extends JFrame {
 				addFlight.setComboBoxData(capitals);
 				addFlight.setVisible(true);
 				addFlight.flight.setId(flights.size() + 1);
+				try {
+					addFlight.flight.appendText();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				flights.add(addFlight.flight);
 				tableModel.addRow(new Object[] { addFlight.flight.getId(), addFlight.flight.getFrom().getName(),
 						addFlight.flight.getTo().getName(), addFlight.flight.getFlightNumber(),
