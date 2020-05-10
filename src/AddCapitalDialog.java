@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -17,28 +18,31 @@ public class AddCapitalDialog extends JDialog {
 	private JTextField txtName;
 	private JTextField txtLat;
 	private JTextField txtLng;
-	
+
+	public String answer = "close";
+
 	public boolean editMode = false;
 	public Capital capital = new Capital();
 	JButton okButton = new JButton("Add");
+
 	/**
 	 * Launch the application.
 	 */
 	public void setCapital(Capital c) {
 		this.capital = c;
 		txtName.setText(capital.getName());
-		txtLat.setText(capital.getLat()+"");
-		txtLng.setText(capital.getLng()+"");
+		txtLat.setText(capital.getLat() + "");
+		txtLng.setText(capital.getLng() + "");
 		okButton.setText(editMode ? "Update" : "Add");
-		
+
 	}
+
 	public static void main(String[] args) {
 		try {
 			AddCapitalDialog dialog = new AddCapitalDialog();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
-			
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -47,8 +51,6 @@ public class AddCapitalDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public String name;
-	public float lat, lng;
 
 	public AddCapitalDialog() {
 		setModal(true);
@@ -99,23 +101,27 @@ public class AddCapitalDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-			
-				
+
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if(!editMode) {
-							name = txtName.getText();
-							lat = Float.parseFloat(txtLat.getText());
-							lng = Float.parseFloat(txtLng.getText());
-						
-						}else {
-							capital.setName(txtName.getText());
-							capital.setLat(Float.parseFloat(txtLat.getText()));
-							capital.setLng(Float.parseFloat(txtLng.getText()));
+						if (txtName.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "Ýsim giriniz!!");
+							return;
 						}
-						
+						if (txtLat.getText().isEmpty() ) {
+							JOptionPane.showMessageDialog(null, "Enlemi giriniz!!");
+							return;
+						}
+						if (txtLng.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "Boylamý giriniz!!");
+							return;
+						}
+						answer = "ok";
+						capital.setName(txtName.getText());
+						capital.setLat(Float.parseFloat(txtLat.getText()));
+						capital.setLng(Float.parseFloat(txtLng.getText()));
 						dispose();
-						
+
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -126,13 +132,14 @@ public class AddCapitalDialog extends JDialog {
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						answer = "cancel";
 						dispose();
 					}
 				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
-			
+
 		}
 	}
 

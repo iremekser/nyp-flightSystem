@@ -21,10 +21,11 @@ public class Capital {
 	}
 
 	public void appendText() throws IOException {
-		Files.write(Paths.get("src/capitals.txt"),
-				(this.getId() + "," + this.getName() + "," + this.getLat() + "," + this.getLng() + "\n").getBytes(),
-				StandardOpenOption.APPEND);
+		Files.write(Paths.get("src/capitals.txt"), txtRow().getBytes(), StandardOpenOption.APPEND);
+	}
 
+	public String txtRow() {
+		return this.getId() + "," + this.getName() + "," + this.getLat() + "," + this.getLng() + "\n";
 	}
 
 	public int getId() {

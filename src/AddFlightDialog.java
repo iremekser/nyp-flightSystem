@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.event.ActionListener;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 
 public class AddFlightDialog extends JDialog {
 
@@ -24,12 +26,14 @@ public class AddFlightDialog extends JDialog {
 	private JTextField txtFlightNumber;
 	private JTextField txtAirline;
 	private JTextField txtAircraftModel;
-	private JTextField txtDeparture;
-	private JTextField txtArrival;
+	private JFormattedTextField txtDeparture;
+	private JFormattedTextField txtArrival;
 	private JComboBox<ComboItem> comboBox;
 	private JComboBox<ComboItem> comboBox_1;
 	private ArrayList<Capital> capitals;
 	public SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+
+	public String answer = "close";
 
 	public boolean editMode = false;
 	public Flight flight = new Flight();
@@ -58,7 +62,7 @@ public class AddFlightDialog extends JDialog {
 		txtAircraftModel.setText(flight.getAircraftModel());
 		txtDeparture.setText(flight.getDepartureFormatted());
 		txtArrival.setText(flight.getArrivalFormatted());
-
+		okButton.setText(editMode ? "Update" : "Add");
 	}
 
 	public void setComboBoxData(ArrayList<Capital> capitals) {
@@ -82,27 +86,29 @@ public class AddFlightDialog extends JDialog {
 
 		txtFlightNumber = new JTextField();
 		txtFlightNumber.setColumns(10);
-		txtFlightNumber.setBounds(242, 109, 113, 22);
+		txtFlightNumber.setBounds(242, 109, 159, 22);
 		contentPanel.add(txtFlightNumber);
 
 		txtAirline = new JTextField();
 		txtAirline.setColumns(10);
-		txtAirline.setBounds(241, 157, 113, 22);
+		txtAirline.setBounds(241, 157, 160, 22);
 		contentPanel.add(txtAirline);
 
 		txtAircraftModel = new JTextField();
 		txtAircraftModel.setColumns(10);
-		txtAircraftModel.setBounds(241, 205, 113, 22);
+		txtAircraftModel.setBounds(241, 205, 160, 22);
 		contentPanel.add(txtAircraftModel);
 
-		txtDeparture = new JTextField();
-		txtDeparture.setColumns(10);
-		txtDeparture.setBounds(242, 253, 113, 22);
+		txtDeparture = new JFormattedTextField(sdf);
+		txtDeparture.setBounds(242, 253, 159, 22);
+		
+		txtDeparture.setText(sdf.format(MainScreen.systemTime.getTime()));
 		contentPanel.add(txtDeparture);
 
-		txtArrival = new JTextField();
-		txtArrival.setColumns(10);
-		txtArrival.setBounds(240, 301, 113, 22);
+		txtArrival = new JFormattedTextField(sdf);
+	
+		txtArrival.setBounds(240, 301, 161, 22);
+		txtArrival.setText(sdf.format(MainScreen.systemTime.getTime()));
 		contentPanel.add(txtArrival);
 
 		JLabel lblNewLabel_3 = new JLabel("Flight Number");
@@ -141,12 +147,13 @@ public class AddFlightDialog extends JDialog {
 		contentPanel.add(lblNewLabel_7);
 
 		comboBox = new JComboBox();
-		comboBox.setBounds(242, 13, 113, 22);
+		comboBox.setBounds(242, 13, 159, 22);
 		contentPanel.add(comboBox);
 
 		comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(242, 61, 113, 22);
+		comboBox_1.setBounds(242, 61, 159, 22);
 		contentPanel.add(comboBox_1);
+		
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -159,23 +166,44 @@ public class AddFlightDialog extends JDialog {
 
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-
+						if (txtFlightNumber.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "Uçuþ numarasýný giriniz!!");
+							return;
+						}
+						if (txtAirline.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "Havayolu þirketini giriniz!!");
+							return;
+						}
+						if (txtAircraftModel.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "Uçak modelini giriniz!!");
+							return;
+						}
+						if ((((ComboItem) comboBox.getSelectedItem()).getValue()
+								- 1) == ((ComboItem) comboBox_1.getSelectedItem()).getValue() - 1) {
+							JOptionPane.showMessageDialog(null, "Farklý þehirler seçiniz!!");
+							return;
+						}
 						Calendar arrival = Calendar.getInstance(), departure = Calendar.getInstance();
+						
 						try {
 							arrival.setTime(sdf.parse(txtArrival.getText()));
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						try {
 							departure.setTime(sdf.parse(txtDeparture.getText()));
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+						} catch (Exception e) {
+							JOptionPane.showMessageDialog(null, "Formata uygun tarih giriniz!!");
+							return;
 						}
-						flight.setFrom(capitals.get(((ComboItem) comboBox.getSelectedItem()).getValue() - 1));
-						flight.setTo(capitals.get(((ComboItem) comboBox_1.getSelectedItem()).getValue() - 1));
+						answer = "ok";
+						Capital cFrom = new Capital(), cTo = new Capital();
+						for (Capital capital : capitals) {
+							if (capital.getId() == ((ComboItem) comboBox.getSelectedItem()).getValue())
+								cFrom = capital;
+							if (capital.getId() == ((ComboItem) comboBox_1.getSelectedItem()).getValue())
+								cTo = capital;
 
+						}
+						
+						flight.setFrom(cFrom);
+						flight.setTo(cTo);
 						flight.setFlightNumber(txtFlightNumber.getText());
 						flight.setAircraftModel(txtAircraftModel.getText());
 						flight.setAirline(txtAirline.getText());
@@ -183,12 +211,11 @@ public class AddFlightDialog extends JDialog {
 						flight.setScheduledArrival(arrival);
 						flight.setDeparture(departure);
 						flight.setArrival(arrival);
-						
-						if (!editMode)
-							{
-							
-								flight.startThread();
-							}
+
+						if (!editMode) {
+
+							flight.startThread();
+						}
 						dispose();
 					}
 				});
@@ -200,6 +227,7 @@ public class AddFlightDialog extends JDialog {
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
+						answer = "cancel";
 						dispose();
 					}
 				});

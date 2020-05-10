@@ -2,6 +2,7 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -15,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.beans.PropertyChangeEvent;
 import java.awt.event.KeyAdapter;
@@ -44,6 +46,18 @@ public class ListFlightsFrame extends JDialog {
 				}
 			}
 		});
+	}
+
+	public void rewrite() {
+		try {
+			FileWriter writer = new FileWriter("src/flights.txt");
+			for (Flight str : flights) {
+				writer.write(str.txtRow());
+			}
+			writer.close();
+		} catch (Exception e2) {
+			// TODO: handle exception
+		}
 	}
 
 	public void setCapitals(ArrayList<Capital> capitals) {
@@ -78,21 +92,25 @@ public class ListFlightsFrame extends JDialog {
 		contentPane.setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
-		
+
 		scrollPane.setBounds(12, 13, 866, 378);
 		contentPane.add(scrollPane);
 
 		table = new JTable();
-		
+
 		scrollPane.setViewportView(table);
 
 		JButton btnNewButton = new JButton("Delete");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selectedIndex = table.getSelectedRow();
-				flights.remove(selectedIndex);
-				tableModel.removeRow(selectedIndex);
-
+				if (selectedIndex == -1)
+					JOptionPane.showMessageDialog(null, "Silmek istediðiniz uçuþu seçiniz!!");
+				else {
+					flights.remove(selectedIndex);
+					tableModel.removeRow(selectedIndex);
+					rewrite();
+				}
 			}
 		});
 		btnNewButton.setBounds(890, 13, 97, 25);
@@ -104,21 +122,22 @@ public class ListFlightsFrame extends JDialog {
 				AddFlightDialog addFlight = new AddFlightDialog();
 				addFlight.setComboBoxData(capitals);
 				addFlight.setVisible(true);
-				addFlight.flight.setId(flights.size() + 1);
-				try {
-					addFlight.flight.appendText();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if (addFlight.answer == "ok") {
+					addFlight.flight.setId(flights.size() + 1);
+					try {
+						addFlight.flight.appendText();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					flights.add(addFlight.flight);
+					tableModel.addRow(new Object[] { addFlight.flight.getId(), addFlight.flight.getFrom().getName(),
+							addFlight.flight.getTo().getName(), addFlight.flight.getFlightNumber(),
+							addFlight.flight.getAirline(), addFlight.flight.getAircraftModel(),
+							addFlight.flight.getScheduledArrivalFormatted(),
+							addFlight.flight.getScheduledDepartureFormatted(), addFlight.flight.getArrivalFormatted(),
+							addFlight.flight.getDepartureFormatted() });
 				}
-				flights.add(addFlight.flight);
-				tableModel.addRow(new Object[] { addFlight.flight.getId(), addFlight.flight.getFrom().getName(),
-						addFlight.flight.getTo().getName(), addFlight.flight.getFlightNumber(),
-						addFlight.flight.getAirline(), addFlight.flight.getAircraftModel(),
-						addFlight.flight.getScheduledArrivalFormatted(),
-						addFlight.flight.getScheduledDepartureFormatted(), addFlight.flight.getArrivalFormatted(),
-						addFlight.flight.getDepartureFormatted() });
-
 			}
 		});
 		btnNewButton_1.setBounds(890, 51, 97, 25);
@@ -127,13 +146,19 @@ public class ListFlightsFrame extends JDialog {
 		JButton btnNewButton_2 = new JButton("Edit");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				AddFlightDialog addFlight = new AddFlightDialog();
-				addFlight.setComboBoxData(capitals);
-				addFlight.setFlight((Flight) flights.get(table.getSelectedRow()));
-				
-				addFlight.setVisible(true);
-				flights.set(table.getSelectedRow(), addFlight.flight);
-				setTableData(flights);
+				int selectedIndex = table.getSelectedRow();
+				if (selectedIndex == -1)
+					JOptionPane.showMessageDialog(null, "Düzenlemek istediðiniz uçuþu seçiniz!!");
+				else {
+					AddFlightDialog addFlight = new AddFlightDialog();
+					addFlight.setComboBoxData(capitals);
+					addFlight.editMode = true;
+					addFlight.setFlight((Flight) flights.get(selectedIndex));
+					addFlight.setVisible(true);
+					flights.set(selectedIndex, addFlight.flight);
+					setTableData(flights);
+					rewrite();
+				}
 			}
 		});
 		btnNewButton_2.setBounds(890, 89, 97, 25);

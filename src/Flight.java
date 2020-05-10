@@ -19,7 +19,9 @@ public class Flight {
 	private Calendar arrival;
 	private boolean accepted;
 	private boolean delayed;
+	private boolean canceled;
 	public SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	Thread flightThread;
 
 	public Flight(int id, Capital from, Capital to, String flightNumber, String airline, String aircraftModel,
 			Calendar scheduledDeparture, Calendar scheduledArrival) {
@@ -40,18 +42,22 @@ public class Flight {
 	public String getInfo() {
 		return "#" + this.getId() + "  " + this.getAirline() + "  " + this.getFrom().getName() + "->"
 				+ this.getTo().getName() + "   " + this.getFlightNumber() + "  "
-				+ (isLanded() ? "iniþ yapýldý"
-						: ((isTakeOff() ? "     iniþe " : "    kalkýþa ") + minuteLeft() + " dakika kaldý "
-								+ (accepted ? " -- iniþ izni verildi" : (delayed ? " -- uçuþ geciktirildi" : ""))));
+				+ (canceled ? "uçuþ iptal edildi"
+						: (isLanded() ? "iniþ yapýldý"
+								: ((isTakeOff() ? "     iniþe " : "    kalkýþa ") + minuteLeft() + " dakika kaldý "
+										+ (accepted ? " -- iniþ izni verildi"
+												: (delayed ? " -- uçuþ geciktirildi" : "")))));
 	}
 
 	public void appendText() throws IOException {
-		Files.write(Paths.get("src/flights.txt"),
-				(this.getId() + "," + this.getFrom().getId() + "," + this.getTo().getId() + "," + this.getFlightNumber()
-						+ "," + this.getAirline() + "," + this.getAircraftModel() + "," + this.getDepartureFormatted()
-						+ "," + this.getArrivalFormatted()+"\n").getBytes(),
-				StandardOpenOption.APPEND);
+		Files.write(Paths.get("src/flights.txt"), txtRow().getBytes(), StandardOpenOption.APPEND);
 
+	}
+
+	public String txtRow() {
+		return this.getId() + "," + this.getFrom().getId() + "," + this.getTo().getId() + "," + this.getFlightNumber()
+				+ "," + this.getAirline() + "," + this.getAircraftModel() + "," + this.getDepartureFormatted() + ","
+				+ this.getArrivalFormatted() + "\n";
 	}
 
 	public float minuteLeft() {
@@ -66,7 +72,7 @@ public class Flight {
 	}
 
 	public boolean isLanded() {
-		return minuteLeft() <= 0;
+		return isTakeOff() && minuteLeft() <= 0;
 	}
 
 	public void addMinuteToArrival(int minute) {
@@ -78,16 +84,32 @@ public class Flight {
 	}
 
 	public void startThread() {
-		Random r = new Random();
-		Thread flightThread = new Thread() {
+		
+		flightThread = new Thread() {
 			public void run() {
 				while (true) {
+					Random r = new Random();
 					try {
 						sleep(1000);
-						if (minuteLeft() < 15 && accepted == false) {
+						if (isLanded()) {
+							stop();
+							return;
+						}
+						if (!isTakeOff() && minuteLeft() == 15) {
+							int random = r.nextInt(100);
+							System.out.println(random);
+							if (random < 15) {
+								canceled = true;
+								accepted = false;
+								delayed = false;
+								stop();
+							}
+						}
+						if (isTakeOff() && minuteLeft() < 15 && accepted == false) {
 							int random = r.nextInt(100);
 							if (random < 50) {
 								accepted = true;
+								canceled = false;
 							} else {
 								addMinuteToArrival(10);
 								delayed = true;
@@ -104,6 +126,18 @@ public class Flight {
 		if (!isLanded())
 			flightThread.start();
 
+	}
+
+	public void stopThread() {
+		this.flightThread.stop();
+	}
+
+	public void pauseThread() {
+		this.flightThread.suspend();
+	}
+
+	public void resumeThread() {
+		this.flightThread.resume();
 	}
 
 	public int getId() {

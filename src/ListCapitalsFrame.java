@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.util.ArrayList;
 
@@ -8,9 +9,11 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTable;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 
@@ -23,6 +26,8 @@ public class ListCapitalsFrame extends JFrame {
 	private JButton btnNewButton;
 	DefaultTableModel tableModel;
 	private JButton btnNewButton_1;
+
+	public ArrayList<Flight> flights = new ArrayList<>();
 
 	/**
 	 * Launch the application.
@@ -38,6 +43,32 @@ public class ListCapitalsFrame extends JFrame {
 				}
 			}
 		});
+	}
+	public void setFlights(ArrayList<Flight> f) {
+		this.flights = f;
+	}
+	public void rewrite() {
+		try {
+			FileWriter writer = new FileWriter("src/capitals.txt");
+			for (Capital str : capitals) {
+				writer.write(str.txtRow());
+			}
+			writer.close();
+		} catch (Exception e2) {
+			// TODO: handle exception
+		}
+	}
+
+	public void rewriteFlight() {
+		try {
+			FileWriter writer = new FileWriter("src/flights.txt");
+			for (Flight str : flights) {
+				writer.write(str.txtRow());
+			}
+			writer.close();
+		} catch (Exception e2) {
+			// TODO: handle exception
+		}
 	}
 
 	public void setTableData(ArrayList<Capital> capitals) {
@@ -73,8 +104,26 @@ public class ListCapitalsFrame extends JFrame {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selectedIndex = table.getSelectedRow();
-				capitals.remove(selectedIndex);
-				tableModel.removeRow(selectedIndex);
+				if (selectedIndex == -1)
+					JOptionPane.showMessageDialog(null, "Silmek istediðiniz þehiri seçiniz!!");
+				else {
+					int result = JOptionPane.showConfirmDialog((Component) null,
+							"Eðer þehiri silerseniz, þehre ait tüm uçuþlar silinecektir!! Silmek istediðinize emin misiniz?",
+							"alert", JOptionPane.YES_NO_OPTION);
+					if (result == 0) {
+						for(int i = 0;i<flights.size();) {
+							if (flights.get(i).getFrom().getId() == capitals.get(selectedIndex).getId()
+									|| flights.get(i).getTo().getId() == capitals.get(selectedIndex).getId()) {
+								flights.remove(i);
+								rewriteFlight();
+							}
+							else i++;
+						}
+						capitals.remove(selectedIndex);
+						tableModel.removeRow(selectedIndex);
+						rewrite();
+					}
+				}
 			}
 		});
 		btnNewButton.setBounds(535, 13, 97, 25);
@@ -83,20 +132,19 @@ public class ListCapitalsFrame extends JFrame {
 		btnNewButton_1 = new JButton("Add");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddCapitalDialog addC = new AddCapitalDialog();
-				addC.setVisible(true);
-				if (addC.name == "" || addC.name == null)
-					return;
-				Capital newCapital = new Capital(capitals.size() + 1, addC.name, addC.lat, addC.lng);
 				try {
-					newCapital.appendText();
+					AddCapitalDialog addCapital = new AddCapitalDialog();
+					addCapital.setVisible(true);
+					if (addCapital.answer == "ok") {
+						addCapital.capital.setId(capitals.size() + 1);
+						addCapital.capital.appendText();
+						capitals.add(addCapital.capital);
+						tableModel.addRow(new Object[] { addCapital.capital.getId(), addCapital.capital.getName(),
+								addCapital.capital.getLat(), addCapital.capital.getLng() });
+					}
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				capitals.add(newCapital);
-				tableModel.addRow(new Object[] { newCapital.getId(), newCapital.getName(), newCapital.getLat(),
-						newCapital.getLng() });
 			}
 		});
 		btnNewButton_1.setBounds(535, 51, 97, 25);
@@ -105,13 +153,19 @@ public class ListCapitalsFrame extends JFrame {
 		JButton btnNewButton_2 = new JButton("Edit");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddCapitalDialog addC = new AddCapitalDialog();
-				addC.editMode = true;
-				addC.setCapital((Capital) capitals.get(table.getSelectedRow()));
+				int selectedIndex = table.getSelectedRow();
+				if (selectedIndex == -1)
+					JOptionPane.showMessageDialog(null, "Düzenlemek istediðiniz þehiri seçiniz!!");
+				else {
+					AddCapitalDialog addCapital = new AddCapitalDialog();
+					addCapital.editMode = true;
+					addCapital.setCapital((Capital) capitals.get(selectedIndex));
 
-				addC.setVisible(true);
-				capitals.set(table.getSelectedRow(), addC.capital);
-				setTableData(capitals);
+					addCapital.setVisible(true);
+					capitals.set(selectedIndex, addCapital.capital);
+					setTableData(capitals);
+					rewrite();
+				}
 			}
 		});
 		btnNewButton_2.setBounds(535, 89, 97, 25);

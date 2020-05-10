@@ -30,9 +30,9 @@ import javax.swing.DefaultListModel;
 import java.awt.SystemColor;
 
 public class MainScreen {
-	Font myFont = new Font("Yu Gothic UI ", Font.BOLD, 16);
+	Font myFont = new Font("Yu Gothic UI ", Font.PLAIN, 20);
 	private JFrame frame;
-	JLabel lblSystemTime = new JLabel("");
+	JLabel lblSystemTime = new JLabel("2019/11/22 17:30:00");
 
 	public static Calendar systemTime;
 	public ArrayList<Capital> capitals = new ArrayList<>();
@@ -65,26 +65,10 @@ public class MainScreen {
 	 * @throws IOException
 	 */
 	public MainScreen() throws ParseException, IOException {
-		initialize();
+
 		systemTime = Calendar.getInstance();
 
-		Thread timer = new Thread() {
-			public void run() {
-				while (true) {
-					try {
-						systemTime.add(Calendar.MINUTE, 1);
-						lblSystemTime.setText(sdf.format(systemTime.getTime()));
-						setListData();
-						sleep(1000);
-
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-
-				}
-			}
-		};
-		timer.start();
+		initialize();
 
 		try (BufferedReader br = new BufferedReader(new FileReader("src/capitals.txt"))) {
 			String line;
@@ -97,13 +81,22 @@ public class MainScreen {
 
 		try (BufferedReader br = new BufferedReader(new FileReader("src/flights.txt"))) {
 			String line;
-			Calendar departure = Calendar.getInstance(), arrival = Calendar.getInstance();
+
 			while ((line = br.readLine()) != null) {
+				Calendar departure = Calendar.getInstance(), arrival = Calendar.getInstance();
 				String[] args = line.split(",");
 				departure.setTime(sdf.parse(args[6]));
 				arrival.setTime(sdf.parse(args[7]));
-				flights.add(new Flight(Integer.parseInt(args[0]), capitals.get(Integer.parseInt(args[1])),
-						capitals.get(Integer.parseInt(args[2])), args[3], args[4], args[5], departure, arrival));
+				Capital cFrom = new Capital(), cTo = new Capital();
+				for (Capital capital : capitals) {
+					if (capital.getId() == Integer.parseInt(args[1]))
+						cFrom = capital;
+					if (capital.getId() == Integer.parseInt(args[2]))
+						cTo = capital;
+
+				}
+				flights.add(new Flight(Integer.parseInt(args[0]), cFrom, cTo, args[3], args[4], args[5], departure,
+						arrival));
 			}
 		}
 		setListData();
@@ -123,6 +116,24 @@ public class MainScreen {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+
+		Thread timer = new Thread() {
+			public void run() {
+				while (true) {
+					try {
+						systemTime.add(Calendar.MINUTE, 1);
+						lblSystemTime.setText(sdf.format(systemTime.getTime()));
+						setListData();
+						sleep(1000);
+
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+				}
+			}
+		};
+		timer.start();
 		frame = new JFrame();
 		frame.setBounds(100, 100, 979, 448);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -136,6 +147,7 @@ public class MainScreen {
 			public void actionPerformed(ActionEvent e) {
 				ListCapitalsFrame listCapitals = new ListCapitalsFrame();
 				listCapitals.setTableData(capitals);
+				listCapitals.setFlights(flights);
 				listCapitals.setVisible(true);
 			}
 		});
@@ -148,6 +160,7 @@ public class MainScreen {
 				ListFlightsFrame listFlights = new ListFlightsFrame();
 				listFlights.setTableData(flights);
 				listFlights.setCapitals(capitals);
+
 				listFlights.setVisible(true);
 				setListData();
 			}
@@ -160,6 +173,42 @@ public class MainScreen {
 		list.setBorder(new LineBorder(SystemColor.windowBorder, 3));
 		list.setCellRenderer(getRenderer());
 		frame.getContentPane().add(list);
+
+		JButton btnNewButton_1 = new JButton("pause");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				for (Flight flight : flights) {
+					flight.pauseThread();
+				}
+				timer.suspend();
+			}
+		});
+		btnNewButton_1.setBounds(12, 212, 97, 25);
+		frame.getContentPane().add(btnNewButton_1);
+
+		JButton btnNewButton_2 = new JButton("resume");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				for (Flight flight : flights) {
+					flight.resumeThread();
+				}
+				timer.resume();
+			}
+		});
+		btnNewButton_2.setBounds(12, 250, 97, 25);
+		frame.getContentPane().add(btnNewButton_2);
+
+		JButton btnNewButton_3 = new JButton("stop");
+		btnNewButton_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				for (Flight flight : flights) {
+					flight.stopThread();
+				}
+				timer.stop();
+			}
+		});
+		btnNewButton_3.setBounds(12, 288, 97, 25);
+		frame.getContentPane().add(btnNewButton_3);
 	}
 
 	private DefaultListCellRenderer getRenderer() {
@@ -171,10 +220,8 @@ public class MainScreen {
 				JLabel listCellRendererComponent = (JLabel) super.getListCellRendererComponent(list, value, index,
 						isSelected, cellHasFocus);
 				listCellRendererComponent.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.BLACK));
-
 				return listCellRendererComponent;
 			}
 		};
 	}
-
 }
