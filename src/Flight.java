@@ -42,11 +42,11 @@ public class Flight {
 	public String getInfo() {
 		return "#" + this.getId() + "  " + this.getAirline() + "  " + this.getFrom().getName() + "->"
 				+ this.getTo().getName() + "   " + this.getFlightNumber() + "  "
-				+ (canceled ? "uçuş iptal edildi"
-						: (isLanded() ? "iniş yapıldı"
-								: ((isTakeOff() ? "     inişe " : "    kalkışa ") + minuteLeft() + " dakika kaldı "
-										+ (accepted ? " -- iniş izni verildi"
-												: (delayed ? " -- uçuş geciktirildi" : "")))));
+				+ (canceled ? "uÃ§uÅŸ iptal edildi"
+						: (isLanded() ? "iniÅŸ yapÄ±ldÄ±"
+								: ((isTakeOff() ? "     iniÅŸe " : "    kalkÄ±ÅŸa ") + minuteLeft() + " dakika kaldÄ± "
+										+ (accepted ? " -- iniÅŸ izni verildi"
+												: (delayed ? " -- uÃ§uÅŸ geciktirildi" : "")))));
 	}
 
 	public void appendText() throws IOException {
@@ -84,8 +84,9 @@ public class Flight {
 	}
 
 	public void startThread() {
-		
+
 		flightThread = new Thread() {
+			@SuppressWarnings("deprecation")
 			public void run() {
 				while (true) {
 					Random r = new Random();
@@ -128,14 +129,17 @@ public class Flight {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	public void stopThread() {
 		this.flightThread.stop();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void pauseThread() {
 		this.flightThread.suspend();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void resumeThread() {
 		this.flightThread.resume();
 	}

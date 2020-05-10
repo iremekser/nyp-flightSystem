@@ -17,7 +17,7 @@ public class Capital {
 	}
 
 	public Capital() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public void appendText() throws IOException {

@@ -1,7 +1,5 @@
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -15,15 +13,15 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeListener;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.beans.PropertyChangeEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class ListFlightsFrame extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTable table;
 	private ArrayList<Flight> flights;
@@ -56,7 +54,7 @@ public class ListFlightsFrame extends JDialog {
 			}
 			writer.close();
 		} catch (Exception e2) {
-			// TODO: handle exception
+			System.out.println(e2.getMessage());
 		}
 	}
 
@@ -105,7 +103,7 @@ public class ListFlightsFrame extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				int selectedIndex = table.getSelectedRow();
 				if (selectedIndex == -1)
-					JOptionPane.showMessageDialog(null, "Silmek istediðiniz uçuþu seçiniz!!");
+					JOptionPane.showMessageDialog(null, "Silmek istediÄŸiniz uÃ§uÅŸu seÃ§iniz!!");
 				else {
 					flights.remove(selectedIndex);
 					tableModel.removeRow(selectedIndex);
@@ -127,7 +125,6 @@ public class ListFlightsFrame extends JDialog {
 					try {
 						addFlight.flight.appendText();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					flights.add(addFlight.flight);
@@ -148,7 +145,7 @@ public class ListFlightsFrame extends JDialog {
 			public void actionPerformed(ActionEvent arg0) {
 				int selectedIndex = table.getSelectedRow();
 				if (selectedIndex == -1)
-					JOptionPane.showMessageDialog(null, "Düzenlemek istediðiniz uçuþu seçiniz!!");
+					JOptionPane.showMessageDialog(null, "DÃ¼zenlemek istediÄŸiniz uÃ§uÅŸu seÃ§iniz!!");
 				else {
 					AddFlightDialog addFlight = new AddFlightDialog();
 					addFlight.setComboBoxData(capitals);

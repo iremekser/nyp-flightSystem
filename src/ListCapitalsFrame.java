@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.util.ArrayList;
@@ -8,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTable;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
@@ -18,6 +16,11 @@ import java.io.IOException;
 import java.awt.event.ActionEvent;
 
 public class ListCapitalsFrame extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private JPanel contentPane;
 
@@ -105,10 +108,10 @@ public class ListCapitalsFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int selectedIndex = table.getSelectedRow();
 				if (selectedIndex == -1)
-					JOptionPane.showMessageDialog(null, "Silmek istediðiniz þehiri seçiniz!!");
+					JOptionPane.showMessageDialog(null, "Silmek istediginiz sehri seciniz!!");
 				else {
 					int result = JOptionPane.showConfirmDialog((Component) null,
-							"Eðer þehiri silerseniz, þehre ait tüm uçuþlar silinecektir!! Silmek istediðinize emin misiniz?",
+							"EÄŸer ÅŸehiri silerseniz, ÅŸehre ait tÃ¼m uÃ§uÅŸlar silinecektir!! Silmek istediÄŸinize emin misiniz?",
 							"alert", JOptionPane.YES_NO_OPTION);
 					if (result == 0) {
 						for(int i = 0;i<flights.size();) {
@@ -155,7 +158,7 @@ public class ListCapitalsFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int selectedIndex = table.getSelectedRow();
 				if (selectedIndex == -1)
-					JOptionPane.showMessageDialog(null, "Düzenlemek istediðiniz þehiri seçiniz!!");
+					JOptionPane.showMessageDialog(null, "DÃ¼zenlemek istediÄŸiniz ÅŸehiri seÃ§iniz!!");
 				else {
 					AddCapitalDialog addCapital = new AddCapitalDialog();
 					addCapital.editMode = true;

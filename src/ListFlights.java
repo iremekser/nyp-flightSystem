@@ -7,6 +7,10 @@ import javax.swing.border.EmptyBorder;
 
 public class ListFlights extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 
 	/**

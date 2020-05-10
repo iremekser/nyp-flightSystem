@@ -9,10 +9,7 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
-import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,6 +19,10 @@ import javax.swing.JFormattedTextField;
 
 public class AddFlightDialog extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtFlightNumber;
 	private JTextField txtAirline;
@@ -146,11 +147,11 @@ public class AddFlightDialog extends JDialog {
 		lblNewLabel_7.setBounds(172, 304, 56, 16);
 		contentPanel.add(lblNewLabel_7);
 
-		comboBox = new JComboBox();
+		comboBox = new JComboBox<ComboItem>();
 		comboBox.setBounds(242, 13, 159, 22);
 		contentPanel.add(comboBox);
 
-		comboBox_1 = new JComboBox();
+		comboBox_1 = new JComboBox<ComboItem>();
 		comboBox_1.setBounds(242, 61, 159, 22);
 		contentPanel.add(comboBox_1);
 		
@@ -167,20 +168,20 @@ public class AddFlightDialog extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						if (txtFlightNumber.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Uçuþ numarasýný giriniz!!");
+							JOptionPane.showMessageDialog(null, "UÃ§uÅŸ numarasÄ±nÄ± giriniz!!");
 							return;
 						}
 						if (txtAirline.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Havayolu þirketini giriniz!!");
+							JOptionPane.showMessageDialog(null, "Havayolu ÅŸirketini giriniz!!");
 							return;
 						}
 						if (txtAircraftModel.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Uçak modelini giriniz!!");
+							JOptionPane.showMessageDialog(null, "UÃ§ak modelini giriniz!!");
 							return;
 						}
 						if ((((ComboItem) comboBox.getSelectedItem()).getValue()
 								- 1) == ((ComboItem) comboBox_1.getSelectedItem()).getValue() - 1) {
-							JOptionPane.showMessageDialog(null, "Farklý þehirler seçiniz!!");
+							JOptionPane.showMessageDialog(null, "FarklÄ± ÅŸehirler seÃ§iniz!!");
 							return;
 						}
 						Calendar arrival = Calendar.getInstance(), departure = Calendar.getInstance();

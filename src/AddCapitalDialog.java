@@ -14,6 +14,10 @@ import java.awt.event.ActionEvent;
 
 public class AddCapitalDialog extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtName;
 	private JTextField txtLat;
@@ -105,7 +109,7 @@ public class AddCapitalDialog extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if (txtName.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Ýsim giriniz!!");
+							JOptionPane.showMessageDialog(null, "Ä°sim giriniz!!");
 							return;
 						}
 						if (txtLat.getText().isEmpty() ) {
@@ -113,7 +117,7 @@ public class AddCapitalDialog extends JDialog {
 							return;
 						}
 						if (txtLng.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Boylamý giriniz!!");
+							JOptionPane.showMessageDialog(null, "BoylamÄ± giriniz!!");
 							return;
 						}
 						answer = "ok";

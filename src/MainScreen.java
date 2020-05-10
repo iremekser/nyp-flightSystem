@@ -6,24 +6,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.awt.event.ActionEvent;
 import javax.swing.JList;
-import javax.swing.ListCellRenderer;
 import javax.swing.border.LineBorder;
-import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -138,8 +130,9 @@ public class MainScreen {
 		frame.setBounds(100, 100, 979, 448);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		lblSystemTime.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
 
-		lblSystemTime.setBounds(12, 174, 156, 25);
+		lblSystemTime.setBounds(6, 173, 156, 25);
 		frame.getContentPane().add(lblSystemTime);
 
 		JButton btnListCapital = new JButton("List Capitals");
@@ -169,13 +162,14 @@ public class MainScreen {
 		frame.getContentPane().add(btnNewButton);
 
 		list.setBounds(144, 16, 781, 354);
-		list.setFont(myFont);
+		list.setFont(new Font("Dialog", Font.PLAIN, 16));
 		list.setBorder(new LineBorder(SystemColor.windowBorder, 3));
 		list.setCellRenderer(getRenderer());
 		frame.getContentPane().add(list);
 
 		JButton btnNewButton_1 = new JButton("pause");
 		btnNewButton_1.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
 				for (Flight flight : flights) {
 					flight.pauseThread();
@@ -188,6 +182,7 @@ public class MainScreen {
 
 		JButton btnNewButton_2 = new JButton("resume");
 		btnNewButton_2.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
 				for (Flight flight : flights) {
 					flight.resumeThread();
@@ -200,6 +195,7 @@ public class MainScreen {
 
 		JButton btnNewButton_3 = new JButton("stop");
 		btnNewButton_3.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
 				for (Flight flight : flights) {
 					flight.stopThread();
