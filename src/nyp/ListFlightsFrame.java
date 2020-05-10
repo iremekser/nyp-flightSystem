@@ -1,3 +1,4 @@
+package nyp;
 import java.awt.EventQueue;
 
 import javax.swing.JOptionPane;
@@ -103,7 +104,7 @@ public class ListFlightsFrame extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				int selectedIndex = table.getSelectedRow();
 				if (selectedIndex == -1)
-					JOptionPane.showMessageDialog(null, "Silmek istediğiniz uçuşu seçiniz!!");
+					JOptionPane.showMessageDialog(null, "Silmek istediginiz ucusu seciniz!!");
 				else {
 					flights.remove(selectedIndex);
 					tableModel.removeRow(selectedIndex);
@@ -145,7 +146,7 @@ public class ListFlightsFrame extends JDialog {
 			public void actionPerformed(ActionEvent arg0) {
 				int selectedIndex = table.getSelectedRow();
 				if (selectedIndex == -1)
-					JOptionPane.showMessageDialog(null, "Düzenlemek istediğiniz uçuşu seçiniz!!");
+					JOptionPane.showMessageDialog(null, "Duzenlemek istediginiz ucusu seciniz!!");
 				else {
 					AddFlightDialog addFlight = new AddFlightDialog();
 					addFlight.setComboBoxData(capitals);

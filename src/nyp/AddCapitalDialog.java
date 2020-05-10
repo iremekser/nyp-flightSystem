@@ -1,3 +1,5 @@
+package nyp;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
@@ -109,7 +111,7 @@ public class AddCapitalDialog extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if (txtName.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "İsim giriniz!!");
+							JOptionPane.showMessageDialog(null, "Isim giriniz!!");
 							return;
 						}
 						if (txtLat.getText().isEmpty() ) {
@@ -117,7 +119,7 @@ public class AddCapitalDialog extends JDialog {
 							return;
 						}
 						if (txtLng.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Boylamı giriniz!!");
+							JOptionPane.showMessageDialog(null, "Boylami giriniz!!");
 							return;
 						}
 						answer = "ok";

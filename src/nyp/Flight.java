@@ -1,3 +1,4 @@
+package nyp;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -42,11 +43,11 @@ public class Flight {
 	public String getInfo() {
 		return "#" + this.getId() + "  " + this.getAirline() + "  " + this.getFrom().getName() + "->"
 				+ this.getTo().getName() + "   " + this.getFlightNumber() + "  "
-				+ (canceled ? "uçuş iptal edildi"
-						: (isLanded() ? "iniş yapıldı"
-								: ((isTakeOff() ? "     inişe " : "    kalkışa ") + minuteLeft() + " dakika kaldı "
-										+ (accepted ? " -- iniş izni verildi"
-												: (delayed ? " -- uçuş geciktirildi" : "")))));
+				+ (canceled ? "ucus iptal edildi"
+						: (isLanded() ? "inis yapildi"
+								: ((isTakeOff() ? "     inise " : "    kalkisa ") + minuteLeft() + " dakika kaldi "
+										+ (accepted ? " -- inis izni verildi"
+												: (delayed ? " -- ucus geciktirildi" : "")))));
 	}
 
 	public void appendText() throws IOException {

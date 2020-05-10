@@ -1,3 +1,4 @@
+package nyp;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
@@ -168,20 +169,20 @@ public class AddFlightDialog extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						if (txtFlightNumber.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Uçuş numarasını giriniz!!");
+							JOptionPane.showMessageDialog(null, "Ucus numarasini giriniz!!");
 							return;
 						}
 						if (txtAirline.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Havayolu şirketini giriniz!!");
+							JOptionPane.showMessageDialog(null, "Havayolu sirketini giriniz!!");
 							return;
 						}
 						if (txtAircraftModel.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Uçak modelini giriniz!!");
+							JOptionPane.showMessageDialog(null, "Ucak modelini giriniz!!");
 							return;
 						}
 						if ((((ComboItem) comboBox.getSelectedItem()).getValue()
 								- 1) == ((ComboItem) comboBox_1.getSelectedItem()).getValue() - 1) {
-							JOptionPane.showMessageDialog(null, "Farklı şehirler seçiniz!!");
+							JOptionPane.showMessageDialog(null, "Farkli sehirler seciniz!!");
 							return;
 						}
 						Calendar arrival = Calendar.getInstance(), departure = Calendar.getInstance();

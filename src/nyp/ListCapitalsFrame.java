@@ -1,3 +1,4 @@
+package nyp;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.util.ArrayList;
@@ -111,7 +112,7 @@ public class ListCapitalsFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Silmek istediginiz sehri seciniz!!");
 				else {
 					int result = JOptionPane.showConfirmDialog((Component) null,
-							"Eğer şehiri silerseniz, şehre ait tüm uçuşlar silinecektir!! Silmek istediğinize emin misiniz?",
+							"Eger sehiri silerseniz, sehre ait tum ucuslar silinecektir!! Silmek istediginize emin misiniz?",
 							"alert", JOptionPane.YES_NO_OPTION);
 					if (result == 0) {
 						for(int i = 0;i<flights.size();) {
@@ -158,7 +159,7 @@ public class ListCapitalsFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int selectedIndex = table.getSelectedRow();
 				if (selectedIndex == -1)
-					JOptionPane.showMessageDialog(null, "Düzenlemek istediğiniz şehiri seçiniz!!");
+					JOptionPane.showMessageDialog(null, "Duzenlemek istediginiz sehiri seciniz!!");
 				else {
 					AddCapitalDialog addCapital = new AddCapitalDialog();
 					addCapital.editMode = true;
